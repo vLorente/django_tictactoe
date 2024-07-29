@@ -19,7 +19,7 @@ class PlayerViewSet(viewsets.ModelViewSet):
 class GameViewSet(viewsets.ModelViewSet):
     queryset = Game.objects.all()
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ['state']
+    filterset_fields = ['state', 'player1', 'player2']
 
     def get_serializer_class(self):
         if self.action == 'create':

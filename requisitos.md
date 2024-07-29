@@ -23,7 +23,7 @@
 - [X] Utilizar curl/wget como clientes para interactuar con la API.
 
 ### Control de Partidas:
-- [ ] Llevar un registro de las partidas jugadas y las puntuaciones.
+- [X] Llevar un registro de las partidas jugadas y las puntuaciones.
 
 ### Tests Unitarios:
 - [X] Implementar pruebas unitarias para asegurar el correcto funcionamiento del código.

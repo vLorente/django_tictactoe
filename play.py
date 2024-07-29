@@ -70,7 +70,7 @@ def print_players(players: List[Player]):
     
 def print_games(games: List[Game]):
     if not games:
-        print('No hay jugadores disponibles.')
+        print('No hay partidas disponibles.')
         return
     
     table = [[game.id, game.player1.name, game.player2.name, game.current_turn.name, game.state] for game in games]
@@ -113,6 +113,14 @@ def get_finished_games_curl():
     command = f"curl -X GET {BASE_URL}/games/?state=finished -H 'Content-Type: application/json'"
     return run_curl_command(command)
 
+def get_games_by_player1_curl(player_id):
+    command = f"curl -X GET {BASE_URL}/games/?player1={player_id} -H 'Content-Type: application/json'"
+    return run_curl_command(command)
+
+def get_games_by_player2_curl(player_id):
+    command = f"curl -X GET {BASE_URL}/games/?player2={player_id} -H 'Content-Type: application/json'"
+    return run_curl_command(command)
+
 def make_move_curl(game_id, player_id, position):
     command = f"curl -X POST {BASE_URL}/games/{game_id}/make_move/ -H 'Content-Type: application/json' -d '{{\"player\": {player_id}, \"position\": {position}}}'"
     return run_curl_command(command)
@@ -132,11 +140,11 @@ def create_new_player():
     print_players(players)
     player_name = input('\nNombre del jugador: ')
     player = create_player_curl(player_name)
-    if player and 'name' not in player:
-        print(f'Jugador creado con ID: {player["id"]}')
-    else:
+    if player and 'id' not in player:
         detail = player['name']
         print(f'Fallo al crear el jugador: {detail}.')
+    else:
+        print(f'Jugador creado con ID: {player["id"]}')
 
 def create_new_game():
     print_info('Creación de nueva partida')
@@ -208,7 +216,7 @@ def play_game(game_id):
     
     
 def main():
-    print('Bienvenido a Tic-Tac-Toe!')
+    print_info('Bienvenido a Tic-Tac-Toe!')
     menu_options = [
         'Crear jugador',
         'Nueva partida',
@@ -226,7 +234,7 @@ def main():
     ]
     history_menu = TerminalMenu(menu_history_options)
     while True:
-        
+        print('\n')
         choice = menu.show()
         
         match choice:
@@ -252,8 +260,16 @@ def main():
                     case 2:
                         games = [Game(game) for game in get_finished_games_curl()]
                         print_games(games)
-                    case 4:
+                    case 3:
+                        players = [Player(player) for player in get_players_curl()]
+                        valid_ids = [player.id for player in players]
+                        print_players(players)
+                        player_id = prompt_for_id('\nSeleccione el ID de jugador:', valid_ids)
+                        as_player1 = [Game(game) for game in get_games_by_player1_curl(player_id)]
+                        as_player2 = [Game(game) for game in get_games_by_player2_curl(player_id)]
                         print('\n')
+                        print_games(as_player1+as_player2)
+                    case 4:
                         continue
                     case _:
                         print_warning('Opción no válida. Por favor, intente de nuevo.')
