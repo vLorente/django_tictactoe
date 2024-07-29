@@ -37,6 +37,7 @@ class GameTests(TestCase):
         self.player2 = Player.objects.create(name='Player 2')
         self.game = Game.objects.create(player1=self.player1, player2=self.player2, current_turn=self.player1)
         self.game_almost_ended = Game.objects.create(player1=self.player1, player2=self.player2, current_turn=self.player1, board='X..O.O..X')
+        self.game_almost_tied = Game.objects.create(player1=self.player1, player2=self.player2, current_turn=self.player2, board='XOOOXXXO.')
         self.position = 0
         self.out_range_position = 9
     
@@ -60,7 +61,7 @@ class GameTests(TestCase):
         self.assertEqual(response_data['board'], '.........')
 
         # Verificar que se creó un único juego
-        self.assertEqual(Game.objects.count(), 3) # Teniendo en cuenta que ya existen el de setUp 
+        self.assertEqual(Game.objects.count(), 4) # Teniendo en cuenta que ya existen el de setUp 
 
         # Verificar que los datos en la base de datos coinciden con los de la respuesta
         game = Game.objects.get(id=response_data['id'])
@@ -126,6 +127,25 @@ class GameTests(TestCase):
         self.game_almost_ended.refresh_from_db()
         self.assertIsNotNone(self.game_almost_ended.winner)
         self.assertEqual(self.game_almost_ended.state, 'finished')
+
+    def test_tie_game(self):
+        response = self.client.post(self.move_url(self.game_almost_tied.id), {
+            'player': self.game_almost_tied.current_turn.id,
+            'position': 8
+        })
+        
+        # Verificar que la respuesta es 200 OK
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.json()
+        
+        # Verificar de datos de la respuesta
+        self.assertIsNone(response_data['winner'])
+        self.assertEqual(response_data['state'], 'finished')
+        
+        # Verificar de datos en base de datos
+        self.game_almost_tied.refresh_from_db()
+        self.assertIsNone(self.game_almost_tied.winner)
+        self.assertEqual(self.game_almost_tied.state, 'finished')
 
         
 class MoveTests(TestCase):
