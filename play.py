@@ -61,7 +61,7 @@ def print_board(board):
 
 def print_players(players: List[Player]):
     if not players:
-        print('No hay jugadores disponibles.')
+        print_warning('\n*No hay jugadores disponibles.')
         return
     
     table = [[player.id, player.name] for player in players]
@@ -70,7 +70,7 @@ def print_players(players: List[Player]):
     
 def print_games(games: List[Game]):
     if not games:
-        print('No hay partidas disponibles.')
+        print_warning('\n*No hay partidas disponibles.')
         return
     
     table = [[game.id, game.player1.name, game.player2.name, game.current_turn.name, game.state] for game in games]
@@ -150,8 +150,7 @@ def create_new_game():
     print_info('Creación de nueva partida')
     players = [Player(player) for player in get_players_curl()]
     valid_ids = [player.id for player in players]
-    logger.error(f'PLAYERS -> {players}')
-    if players or len(players) < 2:
+    if not players or len(players) < 2:
         print_warning('\n**Deben existir al menos dos jugadores para poder jugar una partida.\n')
         return
     
@@ -173,7 +172,7 @@ def create_new_game():
 def continue_game():
     games = [Game(game) for game in get_in_progress_games_curl()]
     if not games:
-        print('No hay partidas disponibles.')
+        print_warning('\n*No hay partidas disponibles.')
         return None
 
     print('Historial de partidas:')
@@ -205,8 +204,6 @@ def play_game(game_id):
         
         position = int(input(f'Ingrese posición para {current_turn_name} (1-9): ')) -1
         
-        logger.error(f'POSITION -> {position}')
-
         move_response = make_move_curl(game_id, current_turn_id, position)            
         
         if move_response and not 'detail' in move_response:
@@ -264,6 +261,9 @@ def main():
                         print_games(games)
                     case 3:
                         players = [Player(player) for player in get_players_curl()]
+                        if not players:
+                            print_warning('\n*No hay jugadores disponibles.')
+                            continue
                         valid_ids = [player.id for player in players]
                         print_players(players)
                         player_id = prompt_for_id('\nSeleccione el ID de jugador:', valid_ids)
