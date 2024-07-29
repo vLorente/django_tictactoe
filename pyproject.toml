@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "tic-tac-toe-api"
+version = "0.1.0"
+description = ""
+authors = ["vLorente <vlorentejimenez@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+django = "^5.0.7"
+djangorestframework = "^3.15.2"
+markdown = "^3.6"
+django-filter = "^24.2"
+simple-term-menu = "^1.6.4"
+tabulate = "^0.9.0"
+prompt-toolkit = "^3.0.47"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
