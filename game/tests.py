@@ -36,9 +36,12 @@ class GameTests(TestCase):
         self.player1 = Player.objects.create(name='Player 1')
         self.player2 = Player.objects.create(name='Player 2')
         self.game = Game.objects.create(player1=self.player1, player2=self.player2, current_turn=self.player1)
-        self.move_url = reverse('game-make-move', args=[self.game.id])
+        self.game_almost_ended = Game.objects.create(player1=self.player1, player2=self.player2, current_turn=self.player1, board='X..O.O..X')
         self.position = 0
         self.out_range_position = 9
+    
+    def move_url(self, game_id):
+        return reverse('game-make-move', args=[game_id])
                                                                                                                                                                                                                                                                                                                                                 
     def test_create_game(self):
         response = self.client.post('/game/api/games/', {
@@ -57,7 +60,7 @@ class GameTests(TestCase):
         self.assertEqual(response_data['board'], '.........')
 
         # Verificar que se creó un único juego
-        self.assertEqual(Game.objects.count(), 2) # Teniendo en cuenta que ya existe el de setUp 
+        self.assertEqual(Game.objects.count(), 3) # Teniendo en cuenta que ya existen el de setUp 
 
         # Verificar que los datos en la base de datos coinciden con los de la respuesta
         game = Game.objects.get(id=response_data['id'])
@@ -68,7 +71,7 @@ class GameTests(TestCase):
     
 
     def test_make_move(self):
-        response = self.client.post(self.move_url, {
+        response = self.client.post(self.move_url(self.game.id), {
             'player': self.player1.id,
             'position': self.position
         })
@@ -86,7 +89,7 @@ class GameTests(TestCase):
         self.assertEqual(self.game.current_turn.id, self.player2.id)
     
     def test_make_out_range_move(self):
-        response = self.client.post(self.move_url, {
+        response = self.client.post(self.move_url(self.game.id), {
             'player': self.game.current_turn.id,
             'position': self.out_range_position
         })
@@ -94,16 +97,35 @@ class GameTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         
     def test_make_move_in_taken_position(self):
-        self.client.post(self.move_url, {
+        self.client.post(self.move_url(self.game.id), {
             'player': self.game.current_turn.id,
             'position': self.position
         })
-        response = self.client.post(self.move_url, {
+        response = self.client.post(self.move_url(self.game.id), {
             'player': self.game.current_turn.id,
             'position': self.position
         })
         # Verificar que la respuesta es 400
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    
+    def test_win_game(self):
+        response = self.client.post(self.move_url(self.game_almost_ended.id), {
+            'player': self.game_almost_ended.current_turn.id,
+            'position': 4
+        })
+        
+        # Verificar que la respuesta es 200 OK
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.json()
+        
+        # Verificar de datos de la respuesta
+        self.assertEqual(response_data['winner']['id'], self.game_almost_ended.current_turn.id)
+        self.assertEqual(response_data['state'], 'finished')
+        
+        # Verificar de datos en base de datos
+        self.game_almost_ended.refresh_from_db()
+        self.assertIsNotNone(self.game_almost_ended.winner)
+        self.assertEqual(self.game_almost_ended.state, 'finished')
 
         
 class MoveTests(TestCase):

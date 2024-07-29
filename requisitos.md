@@ -32,7 +32,7 @@
 - [X] Mantener el estado del juego incluso si el servidor o la aplicación se reinicia.
 
 ### Control de Sesiones:
-- [ ] Implementar autenticación para permitir múltiples partidas y jugadores.
+- [ ] * Implementar autenticación para permitir múltiples partidas y jugadores.
 
 ### Registro de Partidas:
 - [X] Mantener un log de las partidas jugadas.
