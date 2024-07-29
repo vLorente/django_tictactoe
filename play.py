@@ -150,7 +150,8 @@ def create_new_game():
     print_info('Creación de nueva partida')
     players = [Player(player) for player in get_players_curl()]
     valid_ids = [player.id for player in players]
-    if players and len(players) < 2:
+    logger.error(f'PLAYERS -> {players}')
+    if players or len(players) < 2:
         print_warning('\n**Deben existir al menos dos jugadores para poder jugar una partida.\n')
         return
     
@@ -242,7 +243,8 @@ def main():
                 create_new_player()
             case 1:
                 game_id = create_new_game()
-                play_game(game_id)
+                if game_id:
+                    play_game(game_id)
             case 2:
                 game_id = continue_game()
                 if game_id:
