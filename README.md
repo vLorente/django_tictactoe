@@ -23,15 +23,18 @@ poetry export --without-hashes --format=requirements.txt > requirements.txt
    cd prueba_tecnica_phicus
 
 2. **Instalar dependencias**
+
    Instalar todas las dependencias del proyecto:
    ```bash
    poetry install
    ```
 3. **Activar el entorno virtual**
+
    ```bash
    poetry shell
    ```
 4. **Configurar Base de datos**
+
    Realizar las migraciones necesarias para confirurar la base de datos:
    ```bash
    python manage.py makemigrations
@@ -40,6 +43,7 @@ poetry export --without-hashes --format=requirements.txt > requirements.txt
    python manage.py migrate
    ```
 5. **Crear superusuario (Opcional)**
+
    Para acceder al paner de administración de Django, se puede crear un nuevo superusuario:
    ```bash
    python manage.py createsuperuser
