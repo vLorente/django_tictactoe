@@ -62,6 +62,11 @@ El script play.py proporciona una interfaz de línea de comandos para interactua
    python play.py
    ```
 
+### Documentación de la API
+Documentación autogenerada usando [drf-yasg](https://www.django-rest-framework.org/topics/documenting-your-api/#drf-yasg)
+
+Con el servidor levantado, acceder a http://localhost:8000/docs
+
 ## Testing
 Para ejecutar los tests, utiliza el siguiente comando:
 
