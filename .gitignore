@@ -13,7 +13,7 @@ ENV/
 .virtualenv/
 
 # Ignorar los archivos de migraciones de Django
-**/migrations/
+# **/migrations/
 
 # Ignorar los archivos y directorios de logs
 *.log
