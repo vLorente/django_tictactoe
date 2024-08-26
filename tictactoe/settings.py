@@ -142,8 +142,3 @@ REST_FRAMEWORK = {
     ],
 }
 
-# Permissions:
-# AllowAny
-# IsAuthenticated
-# IsAdminUser
-# IsAuthenticatedOrReadOnly
