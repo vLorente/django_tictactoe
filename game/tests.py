@@ -4,15 +4,27 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 from .models import Player, Game, Move
+from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 
 # Configurar el logger
 logger = logging.getLogger(__name__)
 
 # Create your tests here.
 
+def get_valid_user_token():
+    username = 'test'
+    password = 'test123'
+    user = User.objects.create_user(username=username, password=password)
+    # Crear un token para el usuario
+    token = Token.objects.create(user=user)
+    return token
+
 class PlayerTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
+        self.token = get_valid_user_token()
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
         
     def test_create_player(self):
         response = self.client.post('/game/api/players/', {'name': 'TestPlayer'})
@@ -33,6 +45,8 @@ class PlayerTestCase(TestCase):
 class GameTests(TestCase):
     def setUp(self):
         self.client = APIClient()
+        self.token = get_valid_user_token()
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
         self.player1 = Player.objects.create(name='Player 1')
         self.player2 = Player.objects.create(name='Player 2')
         self.game = Game.objects.create(player1=self.player1, player2=self.player2, current_turn=self.player1)
@@ -151,6 +165,8 @@ class GameTests(TestCase):
 class MoveTests(TestCase):
     def setUp(self):
         self.client = APIClient()
+        self.token = get_valid_user_token()
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
         self.player1 = Player.objects.create(name='Player 1')
         self.player2 = Player.objects.create(name='Player 2')
         self.game = Game.objects.create(player1=self.player1, player2=self.player2, current_turn=self.player1)
