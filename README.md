@@ -19,8 +19,8 @@ poetry export --without-hashes --format=requirements.txt > requirements.txt
 1. **Clonar el Repositorio**
 
    ```bash
-   git clone https://github.com/vLorente/prueba_tecnica_phicus
-   cd prueba_tecnica_phicus
+   git clone https://github.com/vLorente/django_tictactoe
+   cd django_tictactoe
 
 2. **Instalar dependencias**
 

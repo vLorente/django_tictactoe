@@ -1,6 +1,4 @@
-# Prueba técnica Python Phicus
-
-## Requisitos Mínimos:
+## Requisitos:
 ### Juego para 2 jugadores:
 - [x] Permitir que dos jugadores jueguen alternativamente.
 - [X] Validar el orden de los movimientos.
@@ -17,7 +15,6 @@
 - [X] Incluir un archivo requirements.txt con las dependencias necesarias.
 - [X] Proveer instrucciones claras para la instalación y ejecución en un archivo README.md.
 
-## Requisitos Valorables:
 ### API REST:
 - [X] Implementar el juego utilizando una API REST.
 - [X] Utilizar curl/wget como clientes para interactuar con la API.

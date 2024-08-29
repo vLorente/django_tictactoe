@@ -24,7 +24,7 @@ schema_view = get_schema_view(
    openapi.Info(
       title="TicTacToe",
       default_version='v1',
-      description="TicTacToe Game API para prueba técnica phicus",
+      description="TicTacToe Game API",
       contact=openapi.Contact(email="vlorentejimenez@gmail.com"),
    ),
    public=True,
