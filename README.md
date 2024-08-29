@@ -1,4 +1,4 @@
-# Prueba Técnica Phicus: TIC TAC TOE
+# Django TIC TAC TOE
 
 ## Requisitos
 
